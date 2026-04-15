@@ -1,14 +1,20 @@
 # kmp-demo
 
-最基础的 Kotlin Multiplatform (KMP) + Compose Desktop 示例，使用标准 MVI 模式实现 `Hello World` 展示。
+Kotlin Multiplatform (KMP) + Compose Desktop 演示项目。
 
-## 架构说明（MVI）
+当前示例聚焦一个更真实的 MVI 场景：
 
-- **Intent**：`HelloIntent`，用于表达用户动作（首次加载、刷新）
-- **State**：`HelloState`，描述界面状态（是否加载中、展示文本）
-- **Effect**：`HelloEffect`，一次性事件（内容加载完成）
-- **ViewModel**：`HelloViewModel`，处理 Intent、更新 State、发送 Effect
-- **View**：`App()`，订阅 State 渲染界面并分发 Intent
+- 首次进入先读缓存
+- 缓存过期或为空时回源网络
+- 网络成功后写回缓存
+- 支持强制刷新、删除缓存
+- UI 通过 `StateFlow/SharedFlow` 响应状态与一次性事件
+
+## 关键学习文档
+
+- `docs/kmp-mvi-cache-demo-guide.md`
+  - A 部分：教程式讲解数据流转
+  - B 部分：工程落地目录和代码骨架
 
 ## 运行方式
 

@@ -476,3 +476,47 @@ CREATE TABLE cache_meta (
 
 当你把这个 demo 跑通，你对 KMP + MVI 的理解会非常扎实。
 
+---
+
+## C. 本仓库实操记录（第1步）
+
+这一节对应“先把数据流跑起来”的第一阶段实现。你可以直接在仓库中打开下面文件对照学习。
+
+### C-1. 本步已实现内容
+
+1. **MVI 合约**
+   - `composeApp/src/commonMain/kotlin/com/example/kmpdemo/article/presentation/ArticleContract.kt`
+2. **ViewModel（Intent -> State/Effect）**
+   - `composeApp/src/commonMain/kotlin/com/example/kmpdemo/article/presentation/ArticleViewModel.kt`
+3. **Repository（缓存优先策略）**
+   - `composeApp/src/commonMain/kotlin/com/example/kmpdemo/article/data/repository/CacheFirstArticleRepository.kt`
+4. **Fake 远端 + 内存本地缓存（便于新手先看懂流程）**
+   - `.../data/remote/FakeArticleRemoteDataSource.kt`
+   - `.../data/local/InMemoryArticleLocalDataSource.kt`
+5. **Compose 页面交互**
+   - `composeApp/src/commonMain/kotlin/com/example/kmpdemo/App.kt`
+   - 按钮：`强制刷新`、`删除缓存`
+6. **KMP 跨平台时间入口（expect/actual）**
+   - `.../article/platform/Clock.kt`
+   - `.../desktopMain/.../Clock.desktop.kt`
+
+### C-2. 你现在可以怎么验证数据流
+
+启动应用后，按这个顺序点按钮并观察界面：
+
+1. **首次启动**
+   - ViewModel 自动发送 `LoadInitial`
+   - 因为本地为空 -> 走网络 -> 写缓存 -> UI显示 NETWORK
+2. **再次进入或再次加载**
+   - 在 TTL 时间内会优先走 CACHE
+3. **点击“强制刷新”**
+   - 跳过缓存直接请求网络
+   - 列表标题中的版本号会递增（v1, v2, v3...）
+4. **点击“删除缓存”**
+   - 本地清空，页面进入空态
+
+### C-3. 为什么先用 Fake 数据源
+
+因为你是新手，第一步先把“流转路径”跑通最关键。  
+真实 Ktor + SQLDelight 接入放在下一步替换，不会改变 MVI 主干结构。
+
